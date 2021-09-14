@@ -5,6 +5,7 @@ import com.example.testspringboot.repository.PersonRepository;
 import net.kaczmarzyk.spring.data.jpa.domain.LessThanOrEqual;
 import net.kaczmarzyk.spring.data.jpa.domain.LikeIgnoreCase;
 import net.kaczmarzyk.spring.data.jpa.web.annotation.And;
+import net.kaczmarzyk.spring.data.jpa.web.annotation.Join;
 import net.kaczmarzyk.spring.data.jpa.web.annotation.Spec;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
@@ -51,15 +52,17 @@ public class PersonController {
 //    }
 
     @GetMapping
-    public List<Person> findUsers(@And({
-            @Spec(path = "name", params="name", spec = LikeIgnoreCase.class),
-            @Spec(path = "dueDate", params = "dueDate", spec = LessThanOrEqual.class),
-            @Spec(path = "createDate", params = "createDate", spec = LessThanOrEqual.class)
-    }) Specification<Person> spec, Sort sort) {
+    public List<Person> findUsers(
+            @Join(path = "address", alias = "a")
+            @And({
+                    @Spec(path = "name", params = "name", spec = LikeIgnoreCase.class),
+                    @Spec(path = "dueDate", params = "dueDate", spec = LessThanOrEqual.class),
+                    @Spec(path = "createDate", params = "createDate", spec = LessThanOrEqual.class),
+                    @Spec(path = "a.addressString", params = "address", spec = LikeIgnoreCase.class)
+            }) Specification<Person> spec, Sort sort) {
         System.out.println(spec.toString());
         return personRepository.findAll(spec, sort);
     }
-
 
 
     @GetMapping("/{id}")

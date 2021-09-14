@@ -6,6 +6,7 @@ import org.hibernate.annotations.CreationTimestamp;
 
 import javax.persistence.*;
 import java.util.Date;
+import java.util.Set;
 
 @Entity
 @Getter
@@ -24,5 +25,9 @@ public class Person {
     @Column
     @Temporal(TemporalType.DATE)
     private Date dueDate;
+
+    @OneToMany(cascade = CascadeType.ALL)
+    @JoinColumn(name = "person_id")
+    private Set<Address> address;
 
 }
