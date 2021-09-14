@@ -21,4 +21,8 @@ public class Person {
     @CreationTimestamp
     private Date createDate;
 
+    @Column
+    @Temporal(TemporalType.DATE)
+    private Date dueDate;
+
 }
