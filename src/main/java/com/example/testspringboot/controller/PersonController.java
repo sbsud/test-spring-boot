@@ -2,6 +2,8 @@ package com.example.testspringboot.controller;
 
 import com.example.testspringboot.model.Person;
 import com.example.testspringboot.repository.PersonRepository;
+import net.kaczmarzyk.spring.data.jpa.domain.EqualIgnoreCase;
+import net.kaczmarzyk.spring.data.jpa.domain.In;
 import net.kaczmarzyk.spring.data.jpa.domain.LessThanOrEqual;
 import net.kaczmarzyk.spring.data.jpa.domain.LikeIgnoreCase;
 import net.kaczmarzyk.spring.data.jpa.web.annotation.And;
@@ -54,11 +56,13 @@ public class PersonController {
     @GetMapping
     public List<Person> findUsers(
             @Join(path = "address", alias = "a")
+            @Join(path = "a.tags", alias = "t")
             @And({
                     @Spec(path = "name", params = "name", spec = LikeIgnoreCase.class),
                     @Spec(path = "dueDate", params = "dueDate", spec = LessThanOrEqual.class),
                     @Spec(path = "createDate", params = "createDate", spec = LessThanOrEqual.class),
-                    @Spec(path = "a.addressString", params = "address", spec = LikeIgnoreCase.class)
+                    @Spec(path = "a.addressString", params = "address", spec = LikeIgnoreCase.class),
+                    @Spec(path = "t.tagValue", paramSeparator=',', params = "tag", spec = In.class)
             }) Specification<Person> spec, Sort sort) {
         System.out.println(spec.toString());
         return personRepository.findAll(spec, sort);
